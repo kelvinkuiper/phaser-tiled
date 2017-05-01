@@ -6,11 +6,16 @@ BasicGame.Game = function (game) {
 BasicGame.Game.prototype = {
 
     create: function () {
+
+        this.physics.startSystem(Phaser.Physics.ARCADE);
+
         this.map = this.add.tilemap('mario');
         this.map.addTilesetImage('SuperMarioBros-World1-1', 'tiles');
 
         this.backgroundLayer = this.map.createLayer('background');
         this.blockedLayer = this.map.createLayer('floor');
+
+        this.map.setCollision([15, 24], true, this.blockedLayer);
 
         //  This resizes the game world to match the layer dimensions
         this.backgroundLayer.resizeWorld();       
@@ -28,6 +33,9 @@ BasicGame.Game.prototype = {
 
     update: function () {
         
+        var playerHitsPlatform = this.physics.arcade.collide(this.player, this.blockedLayer);
+
+
         if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
             this.player.body.velocity.x = -this.player.speed;
             this.player.animations.play('left');
