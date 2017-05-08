@@ -20,6 +20,11 @@ BasicGame.Game.prototype = {
         //  This resizes the game world to match the layer dimensions
         this.backgroundLayer.resizeWorld();       
         
+        //  Here we create our coins group
+        this.coins = this.add.group();
+        this.coins.enableBody = true;
+
+        this.map.createFromObjects('coins', 11, 'asd', 0, true, false, this.coins);
 
         //create player
         this.player = this.add.sprite(250, 0, 'dude');
@@ -29,12 +34,16 @@ BasicGame.Game.prototype = {
         this.player.animations.add('left', [0, 1, 2, 3], 10, true);
         this.player.animations.add('right', [5, 6, 7, 8], 10, true);
 
+        console.log(this.game.cache.getKeys());
+
+       
+
     },
 
     update: function () {
         
         var playerHitsPlatform = this.physics.arcade.collide(this.player, this.blockedLayer);
-
+        var playerHitsPickup = this.physics.arcade.overlap(this.player, this.coins, this.collectCoin);
 
         if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
             this.player.body.velocity.x = -this.player.speed;
@@ -50,5 +59,9 @@ BasicGame.Game.prototype = {
         }
         
     },
+
+    collectCoin: function(player, coin) {
+        coin.destroy();
+    }
 
 };
