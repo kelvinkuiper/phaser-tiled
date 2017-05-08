@@ -10,6 +10,7 @@ BasicGame.Preloader.prototype = {
         this.load.image('tiles', 'assets/tilemaps/super_mario.png');
 
         this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+        this.load.spritesheet('coin', 'assets/coin.png', 32, 32);
     },
 
     create: function () {

@@ -12,6 +12,8 @@ BasicGame.Game.prototype = {
         this.map = this.add.tilemap('mario');
         this.map.addTilesetImage('SuperMarioBros-World1-1', 'tiles');
 
+        console.log(this.cache);
+
         this.backgroundLayer = this.map.createLayer('background');
         this.blockedLayer = this.map.createLayer('floor');
 
@@ -24,7 +26,10 @@ BasicGame.Game.prototype = {
         this.coins = this.add.group();
         this.coins.enableBody = true;
 
-        this.map.createFromObjects('coins', 11, 'asd', 0, true, false, this.coins);
+        this.map.createFromObjects('coins', 11, 'coin', 0, true, false, this.coins);
+
+        this.coins.callAll('animations.add', 'animations', 'spin', [0, 1, 2, 3, 4, 5], 10, true);
+        this.coins.callAll('animations.play', 'animations', 'spin');
 
         //create player
         this.player = this.add.sprite(250, 0, 'dude');
