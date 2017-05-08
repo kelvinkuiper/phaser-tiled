@@ -1,6 +1,6 @@
 
 BasicGame.Game = function (game) {
-   
+    
 };
 
 BasicGame.Game.prototype = {
@@ -34,8 +34,7 @@ BasicGame.Game.prototype = {
         this.player.animations.add('left', [0, 1, 2, 3], 10, true);
         this.player.animations.add('right', [5, 6, 7, 8], 10, true);
 
-        console.log(this.game.cache.getKeys());
-
+        this.score = 0;
        
 
     },
@@ -43,7 +42,7 @@ BasicGame.Game.prototype = {
     update: function () {
         
         var playerHitsPlatform = this.physics.arcade.collide(this.player, this.blockedLayer);
-        var playerHitsPickup = this.physics.arcade.overlap(this.player, this.coins, this.collectCoin);
+        var playerHitsPickup = this.physics.arcade.overlap(this.player, this.coins, this.collectCoin, null, { game: this });
 
         if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
             this.player.body.velocity.x = -this.player.speed;
@@ -61,7 +60,29 @@ BasicGame.Game.prototype = {
     },
 
     collectCoin: function(player, coin) {
+
+        var points;
+
+        // if coin has property 'points' use that, else use 100
+        if(coin.points) {
+            points = coin.points;
+        }
+        else {
+            points = 1;
+        }
+
+        console.log('je scoorde', points)
+
+        // destroy coin from game
         coin.destroy();
+
+        //add points to the score
+        this.game.score = this.game.score + points;
+
+        console.log('je score is nu', this.game.score);
+
+        
+        
     }
 
 };
