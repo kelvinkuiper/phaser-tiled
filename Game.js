@@ -12,8 +12,6 @@ BasicGame.Game.prototype = {
         this.map = this.add.tilemap('mario');
         this.map.addTilesetImage('SuperMarioBros-World1-1', 'tiles');
 
-        console.log(this.cache);
-
         this.backgroundLayer = this.map.createLayer('background');
         this.blockedLayer = this.map.createLayer('floor');
 
