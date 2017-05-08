@@ -18,7 +18,7 @@ BasicGame.Preloader.prototype = {
     },
 
     update: function () {
-        this.state.start('Game');
+        this.state.start('MainMenu');
     }
 
 };

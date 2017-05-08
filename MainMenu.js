@@ -7,12 +7,11 @@ BasicGame.MainMenu.prototype = {
 
     create: function () {
 
-        //  We've already preloaded our assets, so let's kick right into the Main Menu itself.
-        //  Here all we're doing is playing some music and adding a picture and button
-        //  Naturally I expect you to do something significantly better :)
+       console.log("MainMenu state started");
 
-       
-
+       var button = this.add.sprite(100, 100, 'test');
+       button.inputEnabled = true;
+       button.events.onInputDown.add(this.listener, this);
     },
 
     update: function () {
@@ -21,12 +20,9 @@ BasicGame.MainMenu.prototype = {
 
     },
 
-    startGame: function (pointer) {
-
-
-        //  And start the actual game
+    listener: function () {
         this.state.start('Game');
-
     }
+
 
 };
