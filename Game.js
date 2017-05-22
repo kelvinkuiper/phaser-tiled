@@ -30,7 +30,7 @@ BasicGame.Game.prototype = {
         this.coins.callAll('animations.add', 'animations', 'spin', [0, 1, 2, 3, 4, 5], 10, true);
         this.coins.callAll('animations.play', 'animations', 'spin');
 
-        this.player = new BasicGame.Player(this, 10, 10);
+        this.player = new BasicGame.Player(this.game, 10, 10);
         this.add.existing(this.player);
 
         this.score = 0;
@@ -69,21 +69,23 @@ BasicGame.Game.prototype = {
 
 };
 
-
 BasicGame.Player = function(game, x, y) {
     
     Phaser.Sprite.call(this, game, x, y, 'dude');
     
-    game.physics.arcade.enable(this);
+    this.game.physics.arcade.enable(this);
     
     this.body.gravity.y = 600;
     this.speed = 120;
 
+    this.animations.add('left', [0, 1, 2, 3], 10, true);
+    this.animations.add('right', [5, 6, 7, 8], 10, true);
+
     game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.jump.bind(this));
 }
+
 BasicGame.Player.prototype = Object.create(Phaser.Sprite.prototype);
 BasicGame.Player.prototype.constructor = BasicGame.Player;
-
 
 BasicGame.Player.prototype.update = function () {
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -104,7 +106,6 @@ BasicGame.Player.prototype.jump = function () {
     //  Allow the player to jump if they are touching the ground.
     if(this.body.onFloor()) {
         this.body.velocity.y = -300;
-
         //enable player to double jump
         this.mayDoubleJump = true;
     }
