@@ -12,8 +12,6 @@ BasicGame.Game.prototype = {
         this.map = this.add.tilemap('mario');
         this.map.addTilesetImage('SuperMarioBros-World1-1', 'tiles');
 
-
-
         this.backgroundLayer = this.map.createLayer('background');
         this.blockedLayer = this.map.createLayer('floor');
 
@@ -26,42 +24,24 @@ BasicGame.Game.prototype = {
         this.coins = this.add.group();
         this.coins.enableBody = true;
 
+        // Here we create coins for each coin in objectlayer
         this.map.createFromObjects('coins', 11, 'coin', 0, true, false, this.coins);
 
         this.coins.callAll('animations.add', 'animations', 'spin', [0, 1, 2, 3, 4, 5], 10, true);
         this.coins.callAll('animations.play', 'animations', 'spin');
 
-        //create player
-        this.player = this.add.sprite(250, 0, 'dude');
-        this.physics.arcade.enable(this.player);
-        this.player.body.gravity.y = 600;
-        this.player.speed = 120;
-        this.player.animations.add('left', [0, 1, 2, 3], 10, true);
-        this.player.animations.add('right', [5, 6, 7, 8], 10, true);
+        this.player = new BasicGame.Player(this, 10, 10);
+        this.add.existing(this.player);
 
         this.score = 0;
+
        
 
     },
 
     update: function () {
-        
         var playerHitsPlatform = this.physics.arcade.collide(this.player, this.blockedLayer);
         var playerHitsPickup = this.physics.arcade.overlap(this.player, this.coins, this.collectCoin, null, { game: this });
-
-        if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            this.player.body.velocity.x = -this.player.speed;
-            this.player.animations.play('left');
-        } else if (this.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-            this.player.body.velocity.x = this.player.speed;
-            this.player.animations.play('right');
-        } else {
-            //idle
-            this.player.body.velocity.x = 0;
-            this.player.animations.stop();
-            this.player.frame = 4;
-        }
-        
     },
 
     collectCoin: function(player, coin) {
@@ -85,9 +65,57 @@ BasicGame.Game.prototype = {
         this.game.score = this.game.score + points;
 
         console.log('je score is nu', this.game.score);
-
-        
-        
     }
 
 };
+
+
+BasicGame.Player = function(game, x, y) {
+    
+    Phaser.Sprite.call(this, game, x, y, 'dude');
+    
+    game.physics.arcade.enable(this);
+    
+    this.body.gravity.y = 600;
+    this.speed = 120;
+
+    game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.jump.bind(this));
+}
+BasicGame.Player.prototype = Object.create(Phaser.Sprite.prototype);
+BasicGame.Player.prototype.constructor = BasicGame.Player;
+
+
+BasicGame.Player.prototype.update = function () {
+    if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+        this.body.velocity.x = -this.speed;
+        this.animations.play('left');
+    } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+        this.body.velocity.x = this.speed;
+        this.animations.play('right');
+    } else {
+        //idle
+        this.body.velocity.x = 0;
+        this.animations.stop();
+        this.frame = 4;
+    }
+}
+
+BasicGame.Player.prototype.jump = function () {
+    //  Allow the player to jump if they are touching the ground.
+    if(this.body.onFloor()) {
+        this.body.velocity.y = -300;
+
+        //enable player to double jump
+        this.mayDoubleJump = true;
+    }
+    else {
+       // player is not touching down, allow the player to do 1 double jump
+       if(this.mayDoubleJump) {
+           this.body.velocity.y = -300;
+           //disable the player to double jump
+           this.mayDoubleJump = false;
+       }
+    }
+}
+
+
